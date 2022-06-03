@@ -27,9 +27,22 @@
                         </StackPanel>-->
                         <GroupBox Header="Фильтры" Margin="10" Padding="3" HorizontalAlignment="Left">
                             <StackPanel Orientation="Vertical" >
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                    <Label Target="{Binding ElementName=subcategoriesList}">Категории</Label>
-                                    <ComboBox Name="subcategoriesList" VerticalAlignment="Top" ItemsSource="{Binding}"></ComboBox>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,50,10">
+                                    <StackPanel Orientation="Vertical">
+                                        <Label Target="{Binding ElementName=subcategoriesList}" FontWeight="Bold">Категории</Label>
+                                        <ComboBox Name="subcategoriesList" VerticalAlignment="Top" ItemsSource="{Binding}"></ComboBox>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Vertical" Margin="50,0,0,0">
+                                        <TextBlock FontWeight="Black">Цена, ₽</TextBlock>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Target="{Binding ElementName=priceMin}" Width="50">Мин.</Label>
+                                            <TextBox x:Name="priceMin" Width="75" Height="25"></TextBox>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Target="{Binding ElementName=priceMax}" Width="50">Макс.</Label>
+                                            <TextBox x:Name="priceMax" Width="75" Height="25"></TextBox>
+                                        </StackPanel>
+                                    </StackPanel>
                                 </StackPanel>
                                 <!--<StackPanel Orientation="Horizontal">
                                     <Label Target="{Binding ElementName=list}">Категории</Label>

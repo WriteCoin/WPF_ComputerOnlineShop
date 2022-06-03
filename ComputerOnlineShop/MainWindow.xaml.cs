@@ -155,18 +155,52 @@ namespace ComputerOnlineShop
         {
             using (computer_online_shopContext db = new(dbOptions))
             {
-                var products = await (from Product in db.Products
-                               join Subcategory in db.Subcategories on Product.SubcategoryId equals Subcategory.Id
-                               where Subcategory.SubcategoryName == (string)subcategoriesList.SelectedValue
-                               select new GridProduct
-                               {
-                                   Name = Product.ProductName,
-                                   Description = Product.ProductDesc ?? "",
-                                   Price = Product.Price,
-                                   QuantityInStock = Product.QuantityInStock,
-                                   AdditionalBonusCount = Product.AdditionalBonusCount,
-                               }).ToListAsync();
-                grid.ItemsSource = products;
+                try
+                {
+                    bool PriceCondIgnore = true;
+
+                    string PriceMinText = priceMin.Text;
+                    string PriceMaxText = priceMax.Text;
+
+                    decimal PriceMin = 0, PriceMax = 0;
+
+                    if (!(PriceMinText == "" || PriceMaxText == ""))
+                    {
+                        PriceMin = decimal.Parse(priceMin.Text);
+                        PriceMax = decimal.Parse(priceMax.Text);
+
+                        if (PriceMin < 0 || PriceMax < 0)
+                        {
+                            throw new Exception("Цена не может быть отрицательной");
+                        }
+
+                        if (PriceMin > PriceMax)
+                        {
+                            throw new Exception("Минимальная цена не может быть больше максимальной");
+                        }
+
+                        PriceCondIgnore = false;
+                    }
+
+                    var products = await (from Product in db.Products
+                                          join Subcategory in db.Subcategories on Product.SubcategoryId equals Subcategory.Id
+                                          where 
+                                            Subcategory.SubcategoryName == (string)subcategoriesList.SelectedValue &&
+                                            (PriceCondIgnore || Product.Price >= PriceMin && Product.Price <= PriceMax)
+                                          select new GridProduct
+                                          {
+                                              Name = Product.ProductName,
+                                              Description = Product.ProductDesc ?? "",
+                                              Price = Product.Price,
+                                              QuantityInStock = Product.QuantityInStock,
+                                              AdditionalBonusCount = Product.AdditionalBonusCount,
+                                          }).ToListAsync();
+                    grid.ItemsSource = products;
+                } catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка: {ex.Message}");
+                }
+                
             }
         }
 
